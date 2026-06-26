@@ -286,8 +286,9 @@ function UmlStartEnd({ label, end = false }: { label: string; end?: boolean }) {
     <div style={{ display: "flex", justifyContent: "center" }}>
       <div
         style={{
-          width: 96,
+          minWidth: 96,
           height: 34,
+          padding: "0 14px",
           borderRadius: 999,
           border: `2px solid ${end ? theme.accent.primary : theme.stroke.primary}`,
           background: end ? theme.fill.secondary : theme.bg.elevated,
