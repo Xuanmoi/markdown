@@ -81,7 +81,24 @@ export function Grid({ children, columns = 2, gap = 12, style }: CommonProps & {
   );
 }
 
-export function Card({ children, style }: CommonProps & { variant?: string }) {
+export function Card({ children, style, variant }: CommonProps & { variant?: string }) {
+  if (variant === "borderless") {
+    return (
+      <section
+        style={{
+          background: theme.bg.default,
+          border: `1px solid ${theme.stroke.secondary}`,
+          borderRadius: 10,
+          minHeight: 1,
+          padding: 12,
+          ...style,
+        }}
+      >
+        {children}
+      </section>
+    );
+  }
+
   return (
     <section
       style={{
