@@ -512,7 +512,7 @@ const placeOrderRows = [
   [
     "普通 Quote 购物车刷新/清空",
     "Checkout.vue `placeOrder`",
-    "`quoteType === CART_TYPE.quote` 时，登录用户 `loadCart()` 刷新购物车，匿名用户 `clearAnonymousShoppingCart(orderNumber)` 清空匿名购物车。",
+    "`quoteType === CART_TYPE.quote` 时，登录用户 `loadCart()` 刷新购物车，匿名用户 `clearAnonymousShoppingCart(orderNumber)` 清理匿名购物车里被下单的商品条目。",
   ],
   [
     "清除购物车优惠券相关数据",
@@ -721,7 +721,9 @@ function UmlAction({ title, note }: { title: string; note?: string }) {
 function UmlDecision({ title }: { title: string }) {
   const theme = useHostTheme();
   return (
-    <div style={{ display: "flex", justifyContent: "center", padding: "10px 0" }}>
+    <div
+      style={{ display: "flex", justifyContent: "center", padding: "10px 0" }}
+    >
       <div
         style={{
           width: 124,
@@ -754,7 +756,13 @@ function UmlDecision({ title }: { title: string }) {
 function UmlArrow({ label }: { label?: string }) {
   const theme = useHostTheme();
   return (
-    <div style={{ textAlign: "center", color: theme.text.tertiary, lineHeight: "22px" }}>
+    <div
+      style={{
+        textAlign: "center",
+        color: theme.text.tertiary,
+        lineHeight: "22px",
+      }}
+    >
       <div style={{ fontSize: 16 }}>↓</div>
       {label ? <div style={{ fontSize: 12 }}>{label}</div> : null}
     </div>
@@ -782,7 +790,10 @@ export default function QuoteCheckoutUmlCanvas() {
       <Stack gap={8}>
         <H1>报价单 / 结账流程 UML</H1>
         <Text tone="secondary">
-          覆盖 Checkout Quote 初始化、Buy Now 加购与结账特殊处理、匿名邮箱、Shipping Address、Billing Address、地址提交后的结账操作、下单扣款入口、登录入口与多窗口同步、Quote 异常与失效回退，以及可优化点。
+          覆盖 Checkout Quote 初始化、Buy Now
+          加购与结账特殊处理、匿名邮箱、Shipping Address、Billing
+          Address、地址提交后的结账操作、下单扣款入口、登录入口与多窗口同步、Quote
+          异常与失效回退，以及可优化点。
         </Text>
       </Stack>
 
@@ -790,14 +801,24 @@ export default function QuoteCheckoutUmlCanvas() {
         <CardHeader>范围边界</CardHeader>
         <CardBody>
           <Text>
-            本 Canvas 从购物车点击 checkout 或 PDP 点击 Buy Now 之后开始，聚焦 <Code>quote</Code>、checkout 页面初始化、地址、配送、优惠券、税、积分、支付和下单。购物车页本身的 add/update/remove/coupon/select all 逻辑已在 <Code>cart-uml.canvas.tsx</Code> 中收束。后续业务讨论按“checkout URL 携带 quote id”作为目标模型；当前代码仍保留无 id 兼容路径，相关差异会单独标注。
+            本 Canvas 从购物车点击 checkout 或 PDP 点击 Buy Now 之后开始，聚焦{" "}
+            <Code>quote</Code>、checkout
+            页面初始化、地址、配送、优惠券、税、积分、支付和下单。购物车页本身的
+            add/update/remove/coupon/select all 逻辑已在{" "}
+            <Code>cart-uml.canvas.tsx</Code> 中收束。后续业务讨论按“checkout URL
+            携带 quote id”作为目标模型；当前代码仍保留无 id
+            兼容路径，相关差异会单独标注。
           </Text>
         </CardBody>
       </Card>
 
       <Stack gap={10}>
         <H2>本轮描述校验结论</H2>
-        <Table headers={["结论", "说明", "代码证据"]} rows={shippingFindings} striped />
+        <Table
+          headers={["结论", "说明", "代码证据"]}
+          rows={shippingFindings}
+          striped
+        />
       </Stack>
 
       <Stack gap={10}>
@@ -811,9 +832,15 @@ export default function QuoteCheckoutUmlCanvas() {
               <UmlDecision title="URL 是否有 quote id？" />
               <Grid columns={2} gap={16}>
                 <UmlBranch label="有 id：目标模型">
-                  <UmlAction title="loadQuoteById" note="调用 cartV2 拉取 quote" />
+                  <UmlAction
+                    title="loadQuoteById"
+                    note="调用 cartV2 拉取 quote"
+                  />
                   <UmlArrow />
-                  <UmlAction title="写入 quoteStore" note="items / prices / addresses / coupons / errors" />
+                  <UmlAction
+                    title="写入 quoteStore"
+                    note="items / prices / addresses / coupons / errors"
+                  />
                   <UmlArrow />
                   <UmlDecision title="quote 是否有效？" />
                   <Grid columns={2} gap={12}>
@@ -821,12 +848,18 @@ export default function QuoteCheckoutUmlCanvas() {
                       <UmlStartEnd label="渲染 checkout" end />
                     </UmlBranch>
                     <UmlBranch label="无商品/失活">
-                      <UmlAction title="返回购物车或检查订单状态" note="items 为空回 cart；inactive 检查是否已转订单" />
+                      <UmlAction
+                        title="返回购物车或检查订单状态"
+                        note="items 为空回 cart；inactive 检查是否已转订单"
+                      />
                     </UmlBranch>
                   </Grid>
                 </UmlBranch>
                 <UmlBranch label="无 id：当前兼容">
-                  <UmlAction title="兼容旧路径" note="当前代码仍处理 buy now / session quote / 匿名降级" />
+                  <UmlAction
+                    title="兼容旧路径"
+                    note="当前代码仍处理 buy now / session quote / 匿名降级"
+                  />
                   <UmlArrow />
                   <UmlStartEnd label="后续模型不主讲" end />
                 </UmlBranch>
@@ -834,7 +867,11 @@ export default function QuoteCheckoutUmlCanvas() {
             </Stack>
           </CardBody>
         </Card>
-        <Table headers={["环节", "代码位置", "规则"]} rows={quoteInitRows} striped />
+        <Table
+          headers={["环节", "代码位置", "规则"]}
+          rows={quoteInitRows}
+          striped
+        />
       </Stack>
 
       <Stack gap={10}>
@@ -845,53 +882,93 @@ export default function QuoteCheckoutUmlCanvas() {
             <Stack gap={8}>
               <UmlStartEnd label="PDP 点击 Buy Now" />
               <UmlArrow />
-              <UmlAction title="校验选项与库存" note="Simple / Configurable 的自定义选项、可配置属性、库存均通过才继续" />
+              <UmlAction
+                title="校验选项与库存"
+                note="Simple / Configurable 的自定义选项、可配置属性、库存均通过才继续"
+              />
               <UmlArrow />
               <UmlDecision title="是否登录？" />
               <Grid columns={2} gap={16}>
                 <UmlBranch label="匿名">
-                  <UmlAction title="打开 AccountActionSidebar" note="Continue as Guest / Login / Register 后回到 handleBuyNow" />
+                  <UmlAction
+                    title="打开 AccountActionSidebar"
+                    note="Continue as Guest / Login / Register 后回到 handleBuyNow"
+                  />
                   <UmlArrow />
                   <UmlDecision title="是否已有 buyNowCartId？" />
                   <Grid columns={2} gap={12}>
                     <UmlBranch label="无">
-                      <UmlAction title="本地虚拟 Buy Now quote" note="operateVirtualCart(ADD_ITEM)，写入 quoteStore 与 cartStore.buyNowCart" />
+                      <UmlAction
+                        title="本地虚拟 Buy Now quote"
+                        note="operateVirtualCart(ADD_ITEM)，写入 quoteStore 与 cartStore.buyNowCart"
+                      />
                     </UmlBranch>
                     <UmlBranch label="有">
-                      <UmlAction title="远程 Buy Now cart" note="复用 buyNowCartId，cart_type=buy_now 加购" />
+                      <UmlAction
+                        title="远程 Buy Now cart"
+                        note="复用 buyNowCartId，cart_type=buy_now 加购"
+                      />
                     </UmlBranch>
                   </Grid>
                 </UmlBranch>
                 <UmlBranch label="登录">
-                  <UmlAction title="创建/复用 Buy Now cart" note="createEmptyNowCart -> apiState.setBuyNowCartId" />
+                  <UmlAction
+                    title="创建/复用 Buy Now cart"
+                    note="createEmptyNowCart -> apiState.setBuyNowCartId"
+                  />
                   <UmlArrow />
-                  <UmlAction title="按商品类型加购" note="addSimpleProductsToCartWithType / addConfigurableProductsToCartWithType，cart_type=buy_now" />
+                  <UmlAction
+                    title="按商品类型加购"
+                    note="addSimpleProductsToCartWithType / addConfigurableProductsToCartWithType，cart_type=buy_now"
+                  />
                 </UmlBranch>
               </Grid>
               <UmlArrow />
-              <UmlAction title="生成 Buy Now 跳转链接" note="getSecurityKeyForCartItems；跳 /buyNow/:hash，可携带 id=buyNowCartId" />
+              <UmlAction
+                title="生成 Buy Now 跳转链接"
+                note="getSecurityKeyForCartItems；跳 /buyNow/:hash，可携带 id=buyNowCartId"
+              />
               <UmlArrow />
               <UmlDecision title="Checkout URL 是否有 id？" />
               <Grid columns={2} gap={16}>
                 <UmlBranch label="有 id">
-                  <UmlAction title="loadQuoteById" note="和普通 quote 一样拉取远程 Buy Now quote" />
+                  <UmlAction
+                    title="loadQuoteById"
+                    note="和普通 quote 一样拉取远程 Buy Now quote"
+                  />
                 </UmlBranch>
                 <UmlBranch label="无 id：匿名本地兼容">
-                  <UmlAction title="恢复 buyNowCart" note="从 cartStore.buyNowCart 读取 items / coupons / shipping_addresses / cart_errors" />
+                  <UmlAction
+                    title="恢复 buyNowCart"
+                    note="从 cartStore.buyNowCart 读取 items / coupons / shipping_addresses / cart_errors"
+                  />
                   <UmlArrow />
-                  <UmlAction title="提交邮箱/地址时同步" note="syncAnonymousQuote(type=buy_now)，返回 id 后写回 URL 并保存 buyNowCartId" />
+                  <UmlAction
+                    title="提交邮箱/地址时同步"
+                    note="syncAnonymousQuote(type=buy_now)，返回 id 后写回 URL 并保存 buyNowCartId"
+                  />
                 </UmlBranch>
               </Grid>
               <UmlArrow />
-              <UmlAction title="Buy Now Checkout 操作" note="地址、支付、数量更新、优惠券等进入 quote 流程；coupon 变化会同步 buyNowCart.applied_coupons" />
+              <UmlAction
+                title="Buy Now Checkout 操作"
+                note="地址、支付、数量更新、优惠券等进入 quote 流程；coupon 变化会同步 buyNowCart.applied_coupons"
+              />
               <UmlArrow />
-              <UmlAction title="Place Order 成功清理" note="只移除 buyNowCartId 并清空 buyNowCartData，不刷新/清空普通购物车" />
+              <UmlAction
+                title="Place Order 成功清理"
+                note="只移除 buyNowCartId 并清空 buyNowCartData，不刷新/清空普通购物车"
+              />
               <UmlArrow />
               <UmlStartEnd label="进入扣款或支付页" end />
             </Stack>
           </CardBody>
         </Card>
-        <Table headers={["环节", "代码位置", "Buy Now 规则"]} rows={buyNowRows} striped />
+        <Table
+          headers={["环节", "代码位置", "Buy Now 规则"]}
+          rows={buyNowRows}
+          striped
+        />
       </Stack>
 
       <Stack gap={10}>
@@ -908,19 +985,29 @@ export default function QuoteCheckoutUmlCanvas() {
                   <UmlAction title="attachToCart" note="把 email 写入 quote" />
                 </UmlBranch>
                 <UmlBranch label="无 id：当前兼容">
-                  <UmlAction title="syncAnonymousQuote" note="先同步并把 quote id 写回 URL" />
+                  <UmlAction
+                    title="syncAnonymousQuote"
+                    note="先同步并把 quote id 写回 URL"
+                  />
                   <UmlArrow />
                   <UmlAction title="attachToCart" note="再写入 email" />
                 </UmlBranch>
               </Grid>
               <UmlArrow />
-              <UmlAction title="acartEmailGrab" note="使用相同 email + cartId 继续弃购邮件链路" />
+              <UmlAction
+                title="acartEmailGrab"
+                note="使用相同 email + cartId 继续弃购邮件链路"
+              />
               <UmlArrow />
               <UmlStartEnd label="邮箱同步完成" end />
             </Stack>
           </CardBody>
         </Card>
-        <Table headers={["环节", "代码位置", "规则"]} rows={emailRows} striped />
+        <Table
+          headers={["环节", "代码位置", "规则"]}
+          rows={emailRows}
+          striped
+        />
       </Stack>
 
       <Stack gap={10}>
@@ -931,31 +1018,59 @@ export default function QuoteCheckoutUmlCanvas() {
             <Stack gap={8}>
               <UmlStartEnd label="Shipping Step mounted" />
               <UmlArrow />
-              <UmlAction title="读取 quote、国家、用户地址" note="quote.shipping_addresses + loadUserShipping + loadCountries" />
+              <UmlAction
+                title="读取 quote、国家、用户地址"
+                note="quote.shipping_addresses + loadUserShipping + loadCountries"
+              />
               <UmlArrow />
               <UmlDecision title="是否登录？" />
               <Grid columns={2} gap={16}>
                 <UmlBranch label="匿名用户">
-                  <UmlAction title="检查 quote 地址" note="quote.shipping_addresses 是否存在" />
+                  <UmlAction
+                    title="检查 quote 地址"
+                    note="quote.shipping_addresses 是否存在"
+                  />
                   <UmlArrow />
-                  <UmlAction title="有地址：恢复 quote 地址" note="结合 localStorage confirmed 与地址完整性决定 done / 展开" />
+                  <UmlAction
+                    title="有地址：恢复 quote 地址"
+                    note="结合 localStorage confirmed 与地址完整性决定 done / 展开"
+                  />
                   <UmlArrow label="无地址" />
-                  <UmlAction title="初始化默认国家" note="地址表单展开，等待用户编辑" />
+                  <UmlAction
+                    title="初始化默认国家"
+                    note="地址表单展开，等待用户编辑"
+                  />
                 </UmlBranch>
                 <UmlBranch label="登录用户">
-                  <UmlAction title="优先恢复 quote 地址" note="quote 地址完整且本地 confirmed 时显示 done" />
+                  <UmlAction
+                    title="优先恢复 quote 地址"
+                    note="quote 地址完整且本地 confirmed 时显示 done"
+                  />
                   <UmlArrow label="否则" />
-                  <UmlAction title="尝试使用 global address" note="有 global address 时设置到 quote，并直接 done" />
+                  <UmlAction
+                    title="尝试使用 global address"
+                    note="有 global address 时设置到 quote，并直接 done"
+                  />
                   <UmlArrow label="否则" />
-                  <UmlAction title="使用地址簿默认/第一个地址" note="过滤不可用国家地址；地址列表展开，非 done" />
+                  <UmlAction
+                    title="使用地址簿默认/第一个地址"
+                    note="过滤不可用国家地址；地址列表展开，非 done"
+                  />
                   <UmlArrow label="地址簿为空" />
-                  <UmlAction title="初始化默认国家" note="表单展开；后续提交时创建账户地址" />
+                  <UmlAction
+                    title="初始化默认国家"
+                    note="表单展开；后续提交时创建账户地址"
+                  />
                 </UmlBranch>
               </Grid>
             </Stack>
           </CardBody>
         </Card>
-        <Table headers={["场景", "代码位置", "初始化规则"]} rows={shippingInitRows} striped />
+        <Table
+          headers={["场景", "代码位置", "初始化规则"]}
+          rows={shippingInitRows}
+          striped
+        />
       </Stack>
 
       <Stack gap={10}>
@@ -969,52 +1084,96 @@ export default function QuoteCheckoutUmlCanvas() {
               <UmlDecision title="是否匿名？" />
               <Grid columns={2} gap={16}>
                 <UmlBranch label="匿名">
-                  <UmlAction title="确保 quote id" note="无 id 时 await syncAnonymousQuote，并写回 URL" />
+                  <UmlAction
+                    title="确保 quote id"
+                    note="无 id 时 await syncAnonymousQuote，并写回 URL"
+                  />
                   <UmlArrow />
-                  <UmlAction title="更新 quote email" note="await attachToCart -> setGuestEmailOnCartV2" />
+                  <UmlAction
+                    title="更新 quote email"
+                    note="await attachToCart -> setGuestEmailOnCartV2"
+                  />
                 </UmlBranch>
                 <UmlBranch label="登录">
-                  <UmlAction title="跳过邮箱同步" note="不调用 syncAnonymousQuote / attachToCart" />
+                  <UmlAction
+                    title="跳过邮箱同步"
+                    note="不调用 syncAnonymousQuote / attachToCart"
+                  />
                   <UmlArrow />
-                  <UmlAction title="使用账户地址上下文" note="可能引用 customerAddressId 或提交新地址数据" />
+                  <UmlAction
+                    title="使用账户地址上下文"
+                    note="可能引用 customerAddressId 或提交新地址数据"
+                  />
                 </UmlBranch>
               </Grid>
               <UmlArrow />
               <UmlDecision title="需要同步 billing？" />
               <Grid columns={2} gap={16}>
                 <UmlBranch label="是">
-                  <UmlAction title="await saveBilling" note="setBillingAddressOnCartV2；sameAsShipping 可覆盖 shipping" />
+                  <UmlAction
+                    title="await saveBilling"
+                    note="setBillingAddressOnCartV2；sameAsShipping 可覆盖 shipping"
+                  />
                   <UmlArrow />
-                  <UmlAction title="可能继续 await saveShipping" note="登录多地址场景必须先 billing 后 shipping" />
+                  <UmlAction
+                    title="可能继续 await saveShipping"
+                    note="登录多地址场景必须先 billing 后 shipping"
+                  />
                 </UmlBranch>
                 <UmlBranch label="否">
-                  <UmlAction title="await saveShipping" note="保留独立 billing，仅更新邮寄地址" />
+                  <UmlAction
+                    title="await saveShipping"
+                    note="保留独立 billing，仅更新邮寄地址"
+                  />
                 </UmlBranch>
               </Grid>
               <UmlArrow />
               <UmlDecision title="shipping 国家是否变化？" />
               <Grid columns={2} gap={16}>
                 <UmlBranch label="变化">
-                  <UmlAction title="重新初始化支付方式" note="emit initPayment(oldCountry, newCountry)，父组件重新 load payment methods" />
+                  <UmlAction
+                    title="重新初始化支付方式"
+                    note="emit initPayment(oldCountry, newCountry)，父组件重新 load payment methods"
+                  />
                 </UmlBranch>
                 <UmlBranch label="未变化">
-                  <UmlAction title="不重复拉取支付方式" note="仍更新 shipping methods/summary，但支付方式不重新渲染" />
+                  <UmlAction
+                    title="不重复拉取支付方式"
+                    note="仍更新 shipping methods/summary，但支付方式不重新渲染"
+                  />
                 </UmlBranch>
               </Grid>
               <UmlArrow />
-              <UmlAction title="登录地址簿补写" note="新增/编辑地址时 create/update 账户地址；部分分支未 await" />
+              <UmlAction
+                title="登录地址簿补写"
+                note="新增/编辑地址时 create/update 账户地址；部分分支未 await"
+              />
               <UmlArrow />
-              <UmlAction title="更新本地 confirmed" note="syncIsConfirmStatus 写 checkout.regular_shipping.is_confirm" />
+              <UmlAction
+                title="更新本地 confirmed"
+                note="syncIsConfirmStatus 写 checkout.regular_shipping.is_confirm"
+              />
               <UmlArrow />
-              <UmlAction title="更新配送方式与支付初始化" note="updateShippingMethods；done 后 emit initPayment" />
+              <UmlAction
+                title="更新配送方式与支付初始化"
+                note="updateShippingMethods；done 后 emit initPayment"
+              />
               <UmlArrow />
               <UmlStartEnd label="Shipping 完成或回到表单" end />
             </Stack>
           </CardBody>
         </Card>
-        <Table headers={["分类", "对象", "规则"]} rows={shippingBillingRows} striped />
+        <Table
+          headers={["分类", "对象", "规则"]}
+          rows={shippingBillingRows}
+          striped
+        />
         <Divider />
-        <Table headers={["环节", "代码位置", "接口 / await 规则"]} rows={shippingSubmitRows} striped />
+        <Table
+          headers={["环节", "代码位置", "接口 / await 规则"]}
+          rows={shippingSubmitRows}
+          striped
+        />
       </Stack>
 
       <Stack gap={10}>
@@ -1025,21 +1184,39 @@ export default function QuoteCheckoutUmlCanvas() {
             <Stack gap={8}>
               <UmlStartEnd label="Shipping Step" />
               <UmlArrow />
-              <UmlAction title="准备地址上下文" note="过滤不可配送国家地址；默认国家优先 quote 地址，其次 global address，最后 store 默认国家" />
+              <UmlAction
+                title="准备地址上下文"
+                note="过滤不可配送国家地址；默认国家优先 quote 地址，其次 global address，最后 store 默认国家"
+              />
               <UmlArrow />
-              <UmlAction title="初始化配送方式" note="无完整地址时按国家 setShippingCountryCode；完整且 confirmed 时可重算；未 confirmed 时使用 quote 现有 methods" />
+              <UmlAction
+                title="初始化配送方式"
+                note="无完整地址时按国家 setShippingCountryCode；完整且 confirmed 时可重算；未 confirmed 时使用 quote 现有 methods"
+              />
               <UmlArrow />
               <UmlDecision title="用户或系统触发？" />
               <Grid columns={2} gap={16}>
                 <UmlBranch label="编辑 / 新增 / 取消">
-                  <UmlAction title="切换展示状态" note="done、地址列表、地址表单之间切换" />
+                  <UmlAction
+                    title="切换展示状态"
+                    note="done、地址列表、地址表单之间切换"
+                  />
                   <UmlArrow />
-                  <UmlAction title="同步 confirmed" note="写 checkout.regular_shipping.is_confirm" />
+                  <UmlAction
+                    title="同步 confirmed"
+                    note="写 checkout.regular_shipping.is_confirm"
+                  />
                 </UmlBranch>
                 <UmlBranch label="校验 / 配送异常">
-                  <UmlAction title="阻止完成" note="MX CURP/RFC 缺失、未选地址、无配送方式、地址字段不完整" />
+                  <UmlAction
+                    title="阻止完成"
+                    note="MX CURP/RFC 缺失、未选地址、无配送方式、地址字段不完整"
+                  />
                   <UmlArrow />
-                  <UmlAction title="展开或保持表单" note="提示用户补齐地址或选择可用地址" />
+                  <UmlAction
+                    title="展开或保持表单"
+                    note="提示用户补齐地址或选择可用地址"
+                  />
                 </UmlBranch>
               </Grid>
               <UmlArrow />
@@ -1055,7 +1232,11 @@ export default function QuoteCheckoutUmlCanvas() {
             </Stack>
           </CardBody>
         </Card>
-        <Table headers={["场景", "代码位置", "行为"]} rows={shippingEdgeRows} striped />
+        <Table
+          headers={["场景", "代码位置", "行为"]}
+          rows={shippingEdgeRows}
+          striped
+        />
       </Stack>
 
       <Stack gap={10}>
@@ -1066,53 +1247,94 @@ export default function QuoteCheckoutUmlCanvas() {
             <Stack gap={8}>
               <UmlStartEnd label="地址提交成功" />
               <UmlArrow />
-              <UmlAction title="读取 quote 响应" note="地址接口返回默认 selected shipping method 与 available methods" />
+              <UmlAction
+                title="读取 quote 响应"
+                note="地址接口返回默认 selected shipping method 与 available methods"
+              />
               <UmlArrow />
               <UmlDecision title="是否有可用配送方式？" />
               <Grid columns={2} gap={16}>
                 <UmlBranch label="没有">
-                  <UmlAction title="显示无配送方式提示" note="shipping.no.available；Shipping Step 保持未完成" />
+                  <UmlAction
+                    title="显示无配送方式提示"
+                    note="shipping.no.available；Shipping Step 保持未完成"
+                  />
                   <UmlArrow />
                   <UmlStartEnd label="支付与商品模块不可操作" end />
                 </UmlBranch>
                 <UmlBranch label="有">
-                  <UmlAction title="进入 Done 状态" note="支付方式和商品条目模块解除遮罩" />
+                  <UmlAction
+                    title="进入 Done 状态"
+                    note="支付方式和商品条目模块解除遮罩"
+                  />
                   <UmlArrow />
-                  <UmlAction title="初始化支付方式" note="首次或国家变化时加载 payment methods" />
+                  <UmlAction
+                    title="初始化支付方式"
+                    note="首次或国家变化时加载 payment methods"
+                  />
                 </UmlBranch>
               </Grid>
               <UmlArrow />
               <UmlDecision title="用户操作类型？" />
               <Grid columns={2} gap={16}>
                 <UmlBranch label="支付 / 配送">
-                  <UmlAction title="选择支付方式" note="setPaymentMethodOnCart；必要时同步 billing" />
+                  <UmlAction
+                    title="选择支付方式"
+                    note="setPaymentMethodOnCart；必要时同步 billing"
+                  />
                   <UmlArrow />
-                  <UmlAction title="切换配送方式" note="仅多个 shipping method 时调用 setShippingMethodsOnCart" />
+                  <UmlAction
+                    title="切换配送方式"
+                    note="仅多个 shipping method 时调用 setShippingMethodsOnCart"
+                  />
                 </UmlBranch>
                 <UmlBranch label="商品 / 金额调整">
-                  <UmlAction title="更新数量或移除商品" note="更新 quote 后刷新配送方式、价格、优惠和错误" />
+                  <UmlAction
+                    title="更新数量或移除商品"
+                    note="更新 quote 后刷新配送方式、价格、优惠和错误"
+                  />
                   <UmlArrow />
                   <UmlDecision title="移除后是否还有商品？" />
                   <Grid columns={2} gap={12}>
                     <UmlBranch label="无">
-                      <UmlAction title="返回购物车" note="quote items 为空时中断 checkout" />
+                      <UmlAction
+                        title="返回购物车"
+                        note="quote items 为空时中断 checkout"
+                      />
                     </UmlBranch>
                     <UmlBranch label="有">
-                      <UmlAction title="保持 Checkout 可操作" note="刷新 items、prices、shipping、coupons、cart_errors" />
+                      <UmlAction
+                        title="保持 Checkout 可操作"
+                        note="刷新 items、prices、shipping、coupons、cart_errors"
+                      />
                     </UmlBranch>
                   </Grid>
                   <UmlArrow />
-                  <UmlAction title="优惠券 / Pro / 积分互斥" note="优惠券与 Pro 折扣、积分互斥结果由 quote 响应体现" />
+                  <UmlAction
+                    title="优惠券 / Pro / 积分互斥"
+                    note="优惠券与 Pro 折扣、积分互斥结果由 quote 响应体现"
+                  />
                   <UmlArrow />
-                  <UmlAction title="免税证应用/移除" note="更新 prices、applied_exemption、applied_coupons、cart_errors" />
+                  <UmlAction
+                    title="免税证应用/移除"
+                    note="更新 prices、applied_exemption、applied_coupons、cart_errors"
+                  />
                 </UmlBranch>
               </Grid>
             </Stack>
           </CardBody>
         </Card>
-        <Table headers={["流程", "代码位置", "规则"]} rows={postShippingRows} striped />
+        <Table
+          headers={["流程", "代码位置", "规则"]}
+          rows={postShippingRows}
+          striped
+        />
         <Divider />
-        <Table headers={["模块", "代码位置", "规则 / 互斥"]} rows={quoteAdjustmentRows} striped />
+        <Table
+          headers={["模块", "代码位置", "规则 / 互斥"]}
+          rows={quoteAdjustmentRows}
+          striped
+        />
       </Stack>
 
       <Stack gap={10}>
@@ -1126,36 +1348,64 @@ export default function QuoteCheckoutUmlCanvas() {
               <UmlDecision title="支付方式是否 require_billing？" />
               <Grid columns={2} gap={16}>
                 <UmlBranch label="是">
-                  <UmlAction title="展示 BillingStep" note="允许 same as shipping 或独立 billing address" />
+                  <UmlAction
+                    title="展示 BillingStep"
+                    note="允许 same as shipping 或独立 billing address"
+                  />
                   <UmlArrow />
                   <UmlDecision title="是否取消 same as shipping？" />
                   <Grid columns={2} gap={12}>
                     <UmlBranch label="取消">
-                      <UmlAction title="编辑账单地址" note="AddressForm 提交 saveBilling(sameAsShipping=false)" />
+                      <UmlAction
+                        title="编辑账单地址"
+                        note="AddressForm 提交 saveBilling(sameAsShipping=false)"
+                      />
                       <UmlArrow />
-                      <UmlAction title="只更新 quote billing" note="customerAddressId=null，save_in_address_book=false，不写账户地址簿" />
+                      <UmlAction
+                        title="只更新 quote billing"
+                        note="customerAddressId=null，save_in_address_book=false，不写账户地址簿"
+                      />
                       <UmlArrow />
-                      <UmlAction title="Cancel 可恢复旧状态" note="cancelEdit 恢复 oldBillingDetails" />
+                      <UmlAction
+                        title="Cancel 可恢复旧状态"
+                        note="cancelEdit 恢复 oldBillingDetails"
+                      />
                     </UmlBranch>
                     <UmlBranch label="保持">
-                      <UmlAction title="账单跟随邮寄地址" note="saveBilling(sameAsShipping=true)" />
+                      <UmlAction
+                        title="账单跟随邮寄地址"
+                        note="saveBilling(sameAsShipping=true)"
+                      />
                     </UmlBranch>
                   </Grid>
                 </UmlBranch>
                 <UmlBranch label="否">
-                  <UmlAction title="强制恢复跟随" note="若之前独立 billing，则设置 shippingSameAsBilling=true" />
+                  <UmlAction
+                    title="强制恢复跟随"
+                    note="若之前独立 billing，则设置 shippingSameAsBilling=true"
+                  />
                   <UmlArrow />
-                  <UmlAction title="保存 shipping 作为 billing" note="再保存当前支付方式" />
+                  <UmlAction
+                    title="保存 shipping 作为 billing"
+                    note="再保存当前支付方式"
+                  />
                 </UmlBranch>
               </Grid>
               <UmlArrow />
-              <UmlAction title="保存支付方式" note="setPaymentMethodOnCart；Adyen 子方式转换为 code=adyen 并带 adyen.payment_method" />
+              <UmlAction
+                title="保存支付方式"
+                note="setPaymentMethodOnCart；Adyen 子方式转换为 code=adyen 并带 adyen.payment_method"
+              />
               <UmlArrow />
               <UmlStartEnd label="quote billing / payment 更新" end />
             </Stack>
           </CardBody>
         </Card>
-        <Table headers={["场景", "代码位置", "规则"]} rows={billingPaymentRows} striped />
+        <Table
+          headers={["场景", "代码位置", "规则"]}
+          rows={billingPaymentRows}
+          striped
+        />
       </Stack>
 
       <Stack gap={10}>
@@ -1166,12 +1416,18 @@ export default function QuoteCheckoutUmlCanvas() {
             <Stack gap={8}>
               <UmlStartEnd label="点击 Place Order" />
               <UmlArrow />
-              <UmlAction title="支付组件前置校验" note="Stripe 校验卡片字段；Adyen 校验当前组件" />
+              <UmlAction
+                title="支付组件前置校验"
+                note="Stripe 校验卡片字段；Adyen 校验当前组件"
+              />
               <UmlArrow />
               <UmlDecision title="前置校验是否通过？" />
               <Grid columns={2} gap={16}>
                 <UmlBranch label="否">
-                  <UmlAction title="中断下单流程" note="不刷新 quote，不调用 placeOrderV2，不进入扣款" />
+                  <UmlAction
+                    title="中断下单流程"
+                    note="不刷新 quote，不调用 placeOrderV2，不进入扣款"
+                  />
                   <UmlArrow />
                   <UmlStartEnd label="停留 Checkout" end />
                 </UmlBranch>
@@ -1180,35 +1436,65 @@ export default function QuoteCheckoutUmlCanvas() {
                 </UmlBranch>
               </Grid>
               <UmlArrow />
-              <UmlAction title="强制拉取最新 quote" note="loadQuoteById(quoteId, true)，用最新报价单更新页面" />
+              <UmlAction
+                title="强制拉取最新 quote"
+                note="loadQuoteById(quoteId, true)，用最新报价单更新页面"
+              />
               <UmlArrow />
               <UmlDecision title="quote 刷新是否成功？" />
               <Grid columns={2} gap={16}>
                 <UmlBranch label="失败">
-                  <UmlAction title="提示错误并停留" note="关闭 pageMask，用户继续调整地址、商品、优惠或支付方式" />
+                  <UmlAction
+                    title="提示错误并停留"
+                    note="关闭 pageMask，用户继续调整地址、商品、优惠或支付方式"
+                  />
                   <UmlArrow />
                   <UmlStartEnd label="停留 Checkout" end />
                 </UmlBranch>
                 <UmlBranch label="成功">
-                  <UmlAction title="调用 placeOrderV2" note="传 cart_id 与 purchase_order_number" />
+                  <UmlAction
+                    title="调用 placeOrderV2"
+                    note="传 cart_id 与 purchase_order_number"
+                  />
                   <UmlArrow />
                   <UmlDecision title="是否生成订单？" />
                   <Grid columns={2} gap={12}>
                     <UmlBranch label="失败">
-                      <UmlAction title="提示错误并停留" note="下单接口错误或无返回订单" />
+                      <UmlAction
+                        title="提示错误并停留"
+                        note="下单接口错误或无返回订单"
+                      />
                     </UmlBranch>
                     <UmlBranch label="成功">
-                      <UmlAction title="保存订单基础信息" note="保存 order_number / uuid，并记录 affiliate" />
+                      <UmlAction
+                        title="保存订单基础信息"
+                        note="保存 order_number / uuid，并记录 affiliate"
+                      />
                       <UmlArrow />
-                      <UmlAction title="清理购物车数据" note="Buy Now 清理本地 cart id；普通 quote 登录刷新购物车，匿名清空购物车" />
+                      <UmlAction
+                        title="清理购物车数据"
+                        note="Buy Now 清理本地 cart id；普通 quote 登录用户获取最新的购物车，匿名调用clearAnonymousShoppingCart接口获取当前购物车"
+                      />
                       <UmlArrow />
-                      <UmlAction title="清除购物车优惠券相关数据" note="resetCartCoupon + resetCartErrors，避免旧优惠券错误影响下一次购物车" />
+                      <UmlAction
+                        title="清除购物车优惠券相关数据"
+                        note="resetCartCoupon + resetCartErrors，避免旧优惠券错误影响下一次购物车"
+                      />
                       <UmlArrow />
-                      <UmlAction title="写入 pending order" note="保存 orderUUID / anon_order_token / isLogin" />
+                      <UmlAction
+                        title="写入 pending order"
+                        note="保存 orderUUID / anon_order_token / isLogin"
+                      />
                       <UmlArrow />
-                      <UmlAction title="清除 checkout 本地邮箱数据" note="removeLocalStorageItem('checkout')" />
+                      <UmlAction
+                        title="清除 checkout 本地邮箱数据"
+                        note="removeLocalStorageItem('checkout')"
+                      />
                       <UmlArrow />
-                      <UmlAction title="进入扣款环节" note="按支付方式分流：Bank / Adyen / 其他在线支付" />
+                      <UmlAction
+                        title="进入扣款环节"
+                        note="按支付方式分流：Bank / Adyen / 其他在线支付"
+                      />
                     </UmlBranch>
                   </Grid>
                 </UmlBranch>
@@ -1218,9 +1504,17 @@ export default function QuoteCheckoutUmlCanvas() {
             </Stack>
           </CardBody>
         </Card>
-        <Table headers={["环节", "代码位置", "规则"]} rows={placeOrderRows} striped />
+        <Table
+          headers={["环节", "代码位置", "规则"]}
+          rows={placeOrderRows}
+          striped
+        />
         <Divider />
-        <Table headers={["支付方式", "代码位置", "扣款入口 / 回退"]} rows={paymentDeductionRows} striped />
+        <Table
+          headers={["支付方式", "代码位置", "扣款入口 / 回退"]}
+          rows={paymentDeductionRows}
+          striped
+        />
       </Stack>
 
       <Stack gap={10}>
@@ -1234,28 +1528,49 @@ export default function QuoteCheckoutUmlCanvas() {
               <UmlDecision title="是否需要登录？" />
               <Grid columns={2} gap={16}>
                 <UmlBranch label="主动登录入口">
-                  <UmlAction title="Checkout 内无显式入口" note="未挂载 AccountActionSidebar / AccountActionPopup" />
+                  <UmlAction
+                    title="Checkout 内无显式入口"
+                    note="未挂载 AccountActionSidebar / AccountActionPopup"
+                  />
                   <UmlArrow />
-                  <UmlAction title="回到购物车页分流" note="购物车 Secure Checkout 承担登录/注册/Guest 选择" />
+                  <UmlAction
+                    title="回到购物车页分流"
+                    note="购物车 Secure Checkout 承担登录/注册/Guest 选择"
+                  />
                 </UmlBranch>
                 <UmlBranch label="登录态失效">
                   <UmlAction title="提示登录过期" note="quote.login.expired" />
                   <UmlArrow />
-                  <UmlAction title="跳转 /cart" note="不在 Checkout 内打开登录弹窗" />
+                  <UmlAction
+                    title="跳转 /cart"
+                    note="不在 Checkout 内打开登录弹窗"
+                  />
                 </UmlBranch>
               </Grid>
               <UmlArrow />
               <UmlDecision title="是否多窗口/页面恢复？" />
               <Grid columns={2} gap={16}>
                 <UmlBranch label="首次进入 / BFCache 恢复">
-                  <UmlAction title="拉取最新 Quote" note="checkCartStatus -> loadQuoteById" />
+                  <UmlAction
+                    title="拉取最新 Quote"
+                    note="checkCartStatus -> loadQuoteById"
+                  />
                   <UmlArrow />
-                  <UmlAction title="按最新数据呈现" note="可用则进入核心 checkout 组件" />
+                  <UmlAction
+                    title="按最新数据呈现"
+                    note="可用则进入核心 checkout 组件"
+                  />
                 </UmlBranch>
                 <UmlBranch label="窗口重新可见">
-                  <UmlAction title="校验 Quote 可用性" note="visibilitychange -> quoteIsAvailable" />
+                  <UmlAction
+                    title="校验 Quote 可用性"
+                    note="visibilitychange -> quoteIsAvailable"
+                  />
                   <UmlArrow />
-                  <UmlAction title="不可用则跳首页" note="提示 cart.expired；当前不完整刷新 quote 展示" />
+                  <UmlAction
+                    title="不可用则跳首页"
+                    note="提示 cart.expired；当前不完整刷新 quote 展示"
+                  />
                 </UmlBranch>
               </Grid>
               <UmlArrow />
@@ -1263,7 +1578,11 @@ export default function QuoteCheckoutUmlCanvas() {
             </Stack>
           </CardBody>
         </Card>
-        <Table headers={["场景", "代码位置", "当前表现"]} rows={checkoutLoginAndSyncRows} striped />
+        <Table
+          headers={["场景", "代码位置", "当前表现"]}
+          rows={checkoutLoginAndSyncRows}
+          striped
+        />
       </Stack>
 
       <Stack gap={10}>
@@ -1277,46 +1596,80 @@ export default function QuoteCheckoutUmlCanvas() {
               <UmlDecision title="返回错误类型？" />
               <Grid columns={2} gap={16}>
                 <UmlBranch label="登录失效 / Quote 不存在">
-                  <UmlAction title="提示并返回购物车" note="CART_AUTHORIZATION_FAILED / CART_NOT_FOUND -> /cart" />
+                  <UmlAction
+                    title="提示并返回购物车"
+                    note="CART_AUTHORIZATION_FAILED / CART_NOT_FOUND -> /cart"
+                  />
                   <UmlArrow />
                   <UmlStartEnd label="中断当前操作" end />
                 </UmlBranch>
                 <UmlBranch label="Quote inactive / items empty">
-                  <UmlAction title="判定是否已转订单" note="CART_NOT_ACTIVE -> whetherCartConvertedIntoOrder" />
+                  <UmlAction
+                    title="判定是否已转订单"
+                    note="CART_NOT_ACTIVE -> whetherCartConvertedIntoOrder"
+                  />
                   <UmlArrow />
-                  <UmlAction title="跳转目标页" note="订单页 / 收银台 / 首页 / 购物车" />
+                  <UmlAction
+                    title="跳转目标页"
+                    note="订单页 / 收银台 / 首页 / 购物车"
+                  />
                 </UmlBranch>
               </Grid>
               <UmlArrow />
               <UmlDecision title="是否页面恢复或登录态变化？" />
               <Grid columns={2} gap={16}>
                 <UmlBranch label="页面恢复">
-                  <UmlAction title="quoteIsAvailable 校验" note="不可用则提示 cart.expired 并跳首页" />
+                  <UmlAction
+                    title="quoteIsAvailable 校验"
+                    note="不可用则提示 cart.expired 并跳首页"
+                  />
                 </UmlBranch>
                 <UmlBranch label="登录态失效">
-                  <UmlAction title="清理支付组件" note="清理 Stripe Elements，提示 quote.login.expired，跳 /cart" />
+                  <UmlAction
+                    title="清理支付组件"
+                    note="清理 Stripe Elements，提示 quote.login.expired，跳 /cart"
+                  />
                 </UmlBranch>
               </Grid>
               <UmlArrow />
               <UmlDecision title="错误发生在哪类操作？" />
               <Grid columns={2} gap={16}>
                 <UmlBranch label="地址 / 配送 / 支付设置">
-                  <UmlAction title="保存地址异常" note="useShipping / useBilling：授权失效或 cart not found 跳 /cart，其他错误提示" />
+                  <UmlAction
+                    title="保存地址异常"
+                    note="useShipping / useBilling：授权失效或 cart not found 跳 /cart，其他错误提示"
+                  />
                   <UmlArrow />
-                  <UmlAction title="保存配送/支付方式异常" note="useShippingProvider / usePaymentProvider：关键 quote 错误跳 /cart，普通错误提示或记录" />
+                  <UmlAction
+                    title="保存配送/支付方式异常"
+                    note="useShippingProvider / usePaymentProvider：关键 quote 错误跳 /cart，普通错误提示或记录"
+                  />
                 </UmlBranch>
                 <UmlBranch label="商品 / 金额 / 下单">
-                  <UmlAction title="商品数量或移除异常" note="失败时跳 /cart、clear quote 或 reset 数量输入" />
+                  <UmlAction
+                    title="商品数量或移除异常"
+                    note="失败时跳 /cart、clear quote 或 reset 数量输入"
+                  />
                   <UmlArrow />
-                  <UmlAction title="优惠券/积分/免税证异常" note="授权失效、cart not found 跳 /cart；cart inactive 分支可能 clear quote" />
+                  <UmlAction
+                    title="优惠券/积分/免税证异常"
+                    note="授权失效、cart not found 跳 /cart；cart inactive 分支可能 clear quote"
+                  />
                   <UmlArrow />
-                  <UmlAction title="下单异常" note="刷新 quote 或 placeOrderV2 关键错误跳 /cart；普通错误停留 Checkout" />
+                  <UmlAction
+                    title="下单异常"
+                    note="刷新 quote 或 placeOrderV2 关键错误跳 /cart；普通错误停留 Checkout"
+                  />
                 </UmlBranch>
               </Grid>
             </Stack>
           </CardBody>
         </Card>
-        <Table headers={["场景", "代码位置", "处理规则"]} rows={quoteExceptionRows} striped />
+        <Table
+          headers={["场景", "代码位置", "处理规则"]}
+          rows={quoteExceptionRows}
+          striped
+        />
       </Stack>
 
       <Stack gap={10}>
@@ -1329,14 +1682,26 @@ export default function QuoteCheckoutUmlCanvas() {
               <UmlArrow />
               <Grid columns={2} gap={16}>
                 <UmlBranch label="地址设置逻辑">
-                  <UmlAction title="收敛 shipping / billing 分支" note="降低 sameAsShipping、地址簿、匿名邮箱和国家变化的耦合" />
+                  <UmlAction
+                    title="收敛 shipping / billing 分支"
+                    note="降低 sameAsShipping、地址簿、匿名邮箱和国家变化的耦合"
+                  />
                   <UmlArrow />
-                  <UmlAction title="减少重复状态同步" note="统一 quote 地址状态、localStorage confirmed 和支付初始化触发点" />
+                  <UmlAction
+                    title="减少重复状态同步"
+                    note="统一 quote 地址状态、localStorage confirmed 和支付初始化触发点"
+                  />
                 </UmlBranch>
                 <UmlBranch label="错误信息字段">
-                  <UmlAction title="统一错误字段结构" note="收敛接口错误、cart_errors、商品行错误和金额调整错误" />
+                  <UmlAction
+                    title="统一错误字段结构"
+                    note="收敛接口错误、cart_errors、商品行错误和金额调整错误"
+                  />
                   <UmlArrow />
-                  <UmlAction title="提升展示与恢复一致性" note="页面可按统一错误类型决定提示、禁用、跳转或重试" />
+                  <UmlAction
+                    title="提升展示与恢复一致性"
+                    note="页面可按统一错误类型决定提示、禁用、跳转或重试"
+                  />
                 </UmlBranch>
               </Grid>
               <UmlArrow />
@@ -1344,9 +1709,12 @@ export default function QuoteCheckoutUmlCanvas() {
             </Stack>
           </CardBody>
         </Card>
-        <Table headers={["方向", "模块", "期望"]} rows={optimizationRows} striped />
+        <Table
+          headers={["方向", "模块", "期望"]}
+          rows={optimizationRows}
+          striped
+        />
       </Stack>
-
     </Stack>
   );
 }
